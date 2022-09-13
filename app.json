@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "Capture",
+    "slug": "Capture",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "org.name.Capture"
+    }
+  },
+  "name": "Capture"
+}
