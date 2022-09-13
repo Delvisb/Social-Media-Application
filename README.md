@@ -10,11 +10,11 @@ A social media application, named 'Capture'. I created Capture using Node.js for
 ## The Home/Feed Page
 ![Image 9-13-22 at 3 21 PM](https://user-images.githubusercontent.com/99213631/189991016-b6f04c52-b7b1-4984-89e2-a889d4e3b853.jpg)
 
-## After clicking on a post 
-![Image 9-13-22 at 3 06 PM (1)](https://user-images.githubusercontent.com/99213631/189992122-574c8a3c-33c0-4869-97e5-c47b7f763492.jpg)
-
 ## After clicking on the post's likes, or comments
 ![Image 9-13-22 at 3 09 PM](https://user-images.githubusercontent.com/99213631/189992334-980019cc-61c3-4105-94a8-a7527850a2ff.jpg)
+
+## After clicking on a post 
+![Image 9-13-22 at 3 06 PM (1)](https://user-images.githubusercontent.com/99213631/189992122-574c8a3c-33c0-4869-97e5-c47b7f763492.jpg)
 
 ## The Upload Page
 ![Image 9-13-22 at 2 48 PM](https://user-images.githubusercontent.com/99213631/189991105-4a6b715a-1c0d-49c7-8a44-c76597fbd6b7.jpg)
