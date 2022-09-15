@@ -19,7 +19,8 @@ const ChatMessages = require("./models/chatMessages")
 
 //database connection
 async function dbConnection(){
-    const uri = "mongodb+srv://Delvisb:Password4800!@capture.lmjrqc9.mongodb.net/Capture?retryWrites=true&w=majority";
+    //Credentials taken off for security purposes
+    const uri = "mongodb+srv://<Username>:<Password>@capture.lmjrqc9.mongodb.net/Capture?retryWrites=true&w=majority"; 
     mongoose.connect(uri, {
         useNewUrlParser: true, 
         useUnifiedTopology: true
@@ -43,11 +44,12 @@ var corsOptions = {
     origin: [`${process.env.server_url}:19001`, `${process.env.server_url}:19006`],
     optionsSuccessStatus: 200 
 }
-//app.use(cors(corsOptions));
 app.use('/images', express.static('images'));
 
 
-//routes
+//Routes
+
+// Registration route using bcrypt and mongodb
 app.post("/register", async (req, res)  => {
     let username = req.body.username;
     let firstname =  req.body.firstname;
@@ -107,6 +109,7 @@ app.post("/register", async (req, res)  => {
     }
 });
 
+//Login route using bcrypt compare and mongodb
 app.post("/login", async (req, res) =>{
     let username = req.body.username
     let password = req.body.password
@@ -136,6 +139,7 @@ app.post("/login", async (req, res) =>{
 
 })
 
+// Query searching for a post's data from the database
 app.get("/getPost/:id", async (req, res)=> {
     let post = await Posts.findOne({_id: req.params.id});
         if(post){
@@ -143,6 +147,7 @@ app.get("/getPost/:id", async (req, res)=> {
         }
 });
 
+// Query used to send all posts data 
 app.get("/getPosts", async (req, res)=> {
     let posts = await Posts.find()
     let postLikes = await PostLikes.find()
@@ -153,6 +158,7 @@ app.get("/getPosts", async (req, res)=> {
     }
 });
 
+//Route that accepts the user uploading, as well as the post's caption and uri
 app.post("/upload", async (req, res) => {
     let user = req.body.user;
     let caption = req.body.caption;
@@ -191,6 +197,7 @@ app.post("/upload", async (req, res) => {
     }
 })
 
+//Route used for viewing a user's profile whether searched, or view on the profile page
 app.post("/profile", async (req, res) => {
     let user = req.body.user;
     let search = req.body.search;
@@ -211,6 +218,7 @@ app.post("/profile", async (req, res) => {
     }
 });
 
+// Route used for searching for another user 
 app.post("/searchUser", async (req, res)=>{
     let searchName = req.body.searchName
     let resultsFound = await Users.find({ username: searchName})
@@ -221,6 +229,7 @@ app.post("/searchUser", async (req, res)=>{
     } 
 });
 
+//Route used to follow, and unfollow another user 
 app.post('/followUnfollowUser', async (req, res) => {
     let follower = req.body.user;
     let userToFollow = req.body.userToFollow;
@@ -255,10 +264,9 @@ app.post('/followUnfollowUser', async (req, res) => {
             res.status(400)
         )
     }
-
-
 });
 
+//Route used to like, and unlike a post 
 app.post('/likeUnlikeImg', async (req, res) => {
     let user = req.body.user;
     let imgId = req.body.id;  
@@ -293,6 +301,7 @@ app.post('/likeUnlikeImg', async (req, res) => {
     }
 }); 
 
+//Route used to get the likers of a user's post 
 app.get('/getLikes/:imgId', async (req, res) =>{
     let imgId = req.params.imgId; 
     let postLikes = await PostLikes.find({imgId: imgId})
@@ -309,6 +318,7 @@ app.get('/getLikes/:imgId', async (req, res) =>{
     }
 })
 
+//Route used to add comments to a user's post 
 app.post('/addComment', async (req, res) =>{
     let imgId = req.body.imgId;
     let commentedBy = req.body.user;  
@@ -338,6 +348,7 @@ app.post('/addComment', async (req, res) =>{
     }
 });
 
+//Route used to get the comments of a post from the DB
 app.get('/getComments/:imgId', async  (req, res) => {
     let imgId = req.params.imgId; 
     let comments = await Comments.find({imgId: imgId})
@@ -355,6 +366,7 @@ app.get('/getComments/:imgId', async  (req, res) => {
     }
 })
 
+//Route used to get the followers of a searched user
 app.get('/getFollowers/:search', async (req, res) =>{
     let search = req.params.search; 
     let followers = await Followers.find({username: search})
@@ -369,6 +381,7 @@ app.get('/getFollowers/:search', async (req, res) =>{
     res.status(200).json({response: followers, response2: followerList}) 
 })
 
+//Route used to get the followers of a searched user
 app.get('/getFollowing/:search', async (req, res) =>{
     let search = req.params.search; 
     let following = await Followers.find({followedBy: search})
@@ -383,16 +396,18 @@ app.get('/getFollowing/:search', async (req, res) =>{
     res.status(200).json({response: following, response2: followingList}) 
 });
 
+//Route used to create an unique name in the database for users to chat 
 app.post('/createChat', async (req,res) =>{
     let user = req.body.user;
     let member = req.body.member;
 
+    //Chat ids are created using the two users username with "Chat" at the end 
     if(user && member){ 
         let chatId = user + "+" + member + "Chat"
         let chatAlreadyExists =  await Chat.find({chatId: chatId})
         let chatId2 = member + "+" + user + "Chat"
         let chatAlreadyExists2 =  await Chat.find({chatId: chatId2}) 
-
+    
         if(chatAlreadyExists.length < 1 && chatAlreadyExists2.length < 1 ){
             const newChat  = new Chat({ 
                 chatId:  chatId,
@@ -431,6 +446,7 @@ app.post('/createChat', async (req,res) =>{
     }
 })
 
+//Route used to send the chat members and their messages to the client-side 
 app.get('/getChat/:chatId', async (req, res) =>{
     let chatId = req.params.chatId;
     let chatMembers = await ChatMembers.find({chatId: chatId})
@@ -448,6 +464,7 @@ app.get('/getChat/:chatId', async (req, res) =>{
     }
 })
 
+//Route used for adding a new direct message in the DB 
 app.post('/addMessage', async (req, res)=>{
     let chatId = req.body.chatId
     let sentBy = req.body.sentBy
@@ -464,6 +481,7 @@ app.post('/addMessage', async (req, res)=>{
     })
 })
 
+//Route used to show the list of currently created chat from the database, which appears on the Chat Page
 app.get('/getChatList/:user', async (req, res) =>{
     let user = req.params.user;
     let found = await ChatMembers.find({member: user}, {chatId: 1, numOfMessages: 1})
